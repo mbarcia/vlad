@@ -3,7 +3,7 @@
 - name: drupal install | copy Drupal installation scripts
   template:
     src="drupal{{ item }}_install.j2"
-    dest="{{ apache2_docroot }}/drupal{{ item }}_install.sh"
+    dest="{{ web_docroot }}/drupal{{ item }}_install.sh"
   with_items:
     - 6
     - 7
@@ -14,7 +14,7 @@
 # Setting "mode" to 755 in the above template task appears to have no effect :(
 - name: drupal install | set Drupal installation scripts to executable
   file: 
-    path="{{ apache2_docroot }}/drupal{{ item }}_install.sh" 
+    path="{{ web_docroot }}/drupal{{ item }}_install.sh" 
     mode=755
   with_items:
     - 6
@@ -25,7 +25,7 @@
 
 - name: drupal install | create drupal folder
   file:
-    path={{ apache2_docroot }}/drupal
+    path={{ web_docroot }}/drupal
     state=directory
     owner={{ user }}
     group={{ user }}

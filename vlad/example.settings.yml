@@ -66,8 +66,3 @@
 
 # HTTP port for the Varnish cache
   varnish_http_port: 80
-
-# Apache 2 document root. For ubuntu12:
-#  apache2_docroot: "/var/www"
-# For ubuntu14 and centos66:
-  apache2_docroot: "/var/www/html"

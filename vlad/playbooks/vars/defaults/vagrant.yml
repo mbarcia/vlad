@@ -41,4 +41,6 @@ vlad_os: "ubuntu14"
 #  apache2_docroot: "/var/www"
 # For ubuntu14 and centos66:
 apache2_docroot: "/var/www/html"
-  
+
+# Same as Apache for now, as it is the only webserver available
+web_docroot: "/var/www/html"

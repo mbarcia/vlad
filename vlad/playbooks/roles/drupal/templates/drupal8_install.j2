@@ -1,19 +1,19 @@
 # Remove everything that might be in the docroot directory.
-rm -rf {{ apache2_docroot }}/drupal/.* {{ apache2_docroot }}/drupal/*
+rm -rf {{ web_docroot }}/drupal/.* {{ web_docroot }}/drupal/*
 
 # Clone latest Drupal 8 beta release into the docroot direcory.
-git ls-remote --tags http://git.drupal.org/project/drupal.git | grep refs/tags/8\.0\.0-beta | xargs -n1 | tail -n 1 |  sed 's/refs\/tags\///' | xargs -I % git clone --branch % http://git.drupal.org/project/drupal.git {{ apache2_docroot }}/drupal
+git ls-remote --tags http://git.drupal.org/project/drupal.git | grep refs/tags/8\.0\.0-beta | xargs -n1 | tail -n 1 |  sed 's/refs\/tags\///' | xargs -I % git clone --branch % http://git.drupal.org/project/drupal.git {{ web_docroot }}/drupal
 
 # Create a settings.php fie.
-cp {{ apache2_docroot }}/drupal/sites/default/default.settings.php {{ apache2_docroot }}/drupal/sites/default/settings.php
+cp {{ web_docroot }}/drupal/sites/default/default.settings.php {{ web_docroot }}/drupal/sites/default/settings.php
 
 # Create some directories.
-mkdir {{ apache2_docroot }}/drupal/modules/contrib
-mkdir {{ apache2_docroot }}/drupal/modules/custom
+mkdir {{ web_docroot }}/drupal/modules/contrib
+mkdir {{ web_docroot }}/drupal/modules/custom
 
 # Set some lenient permissions on the docroot directory.
-chmod -R 777 {{ apache2_docroot }}/drupal
+chmod -R 777 {{ web_docroot }}/drupal
 
 # Install Drupal using the drush-master.
-cd {{ apache2_docroot }}/drupal
+cd {{ web_docroot }}/drupal
 /home/vagrant/drush-master/drush site-install --db-url=mysql://{{ dbuser }}:{{ dbpass }}@localhost/{{ dbname[0] }} --account-name=admin --account-pass=password --yes
