@@ -1,5 +1,0 @@
----
-# Debian family vars
-apache2_pkg: httpd
-apache2_user: www-data
-apache2_group: www-data
