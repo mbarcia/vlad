@@ -265,27 +265,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Run an Ansible playbook on setting the box up
   config.trigger.before [:up, :resume], :stdout => true, :force => true do
     info "Executing 'up' setup trigger"
-      if !File.exist?(vlad_hosts_file)
-        if is_windows
-          info "Creating " + vlad_hosts_file
-          FileUtils.cp(vagrant_dir + "/vlad/playbooks/templates/host.j2 ", vlad_hosts_file)
-        else
-          run 'ansible-playbook -i ' + boxipaddress + ', ' + vagrant_dir + '/vlad/playbooks/local_up.yml --extra-vars "local_ip_address=' + boxipaddress + '"'
-        end
+      if is_windows
+        info "Creating " + vlad_hosts_file
+        FileUtils.cp(vagrant_dir + "/vlad/playbooks/templates/host.j2 ", vlad_hosts_file)
+      else
+        run 'ansible-playbook -i ' + boxipaddress + ', ' + vagrant_dir + '/vlad/playbooks/local_up.yml --extra-vars "local_ip_address=' + boxipaddress + '"'
       end
   end
 
-   # Run the halt/destroy playbook upon halting or destroying the box
-  if File.exist?(vlad_hosts_file)
-    config.trigger.before [:halt, :destroy], :stdout => true, :force => true do
-      info "Executing 'halt/destroy' trigger"
-      if is_windows
-        run_remote 'ansible-playbook -i ' + boxipaddress + ', /vagrant/vlad/playbooks/local_halt_destroy.yml --extra-vars "is_windows=true local_ip_address=' + boxipaddress + '" --connection=local'
-        info "Deleting " + vlad_hosts_file
-        File.delete(vlad_hosts_file) if File.exist?(vlad_hosts_file)
-      else
-        run 'ansible-playbook ' + vagrant_dir + '/vlad/playbooks/local_halt_destroy.yml --extra-vars "local_ip_address=' + boxipaddress + '"'
-      end
+  # Run the halt/destroy playbook upon halting or destroying the box
+  config.trigger.before [:halt, :destroy], :stdout => true, :force => true do
+    info "Executing 'halt/destroy' trigger"
+    if is_windows
+      run_remote 'ansible-playbook -i ' + boxipaddress + ', /vagrant/vlad/playbooks/local_halt_destroy.yml --extra-vars "is_windows=true local_ip_address=' + boxipaddress + '" --connection=local'
+      info "Deleting " + vlad_hosts_file
+      File.delete(vlad_hosts_file) if File.exist?(vlad_hosts_file)
+    else
+      run 'ansible-playbook -i ' + boxipaddress + ', ' + vagrant_dir + '/vlad/playbooks/local_halt_destroy.yml --private-key=~/.vagrant.d/insecure_private_key --extra-vars "local_ip_address=' + boxipaddress + '"'
     end
   end
 
@@ -294,7 +290,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     if is_windows
       run_remote 'ansible-playbook -i ' + boxipaddress + ', /vagrant/vlad/playbooks/local_up_services.yml --extra-vars "is_windows=true local_ip_address=' + boxipaddress + '" --connection=local'
     else
-      run 'ansible-playbook ' + vagrant_dir + '/vlad/playbooks/local_up_services.yml --extra-vars "local_ip_address=' + boxipaddress + '"'
+      run 'ansible-playbook -i ' + boxipaddress + ', ' + vagrant_dir + '/vlad/playbooks/local_up_services.yml --private-key=~/.vagrant.d/insecure_private_key --extra-vars "local_ip_address=' + boxipaddress + '"'
     end
   end
 
@@ -306,7 +302,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     info 'Vlad is up and running!'
   end
 
-  # Workaround to https://github.com/mitchellh/vagrant/issues/1673
   if vlad_os == 'ubuntu12' || vlad_os == 'ubuntu14'
     config.vm.provision "shell" do |sh|
       #if there a line that only consists of 'mesg n' in /root/.profile, replace it with 'tty -s && mesg n'

@@ -10,9 +10,16 @@
     state=directory
   tags: composer
 
+- name: composer | ensure previous composer vendor directory is not in the user's PATH
+  lineinfile:
+    dest=/home/{{ user }}/.bashrc
+    state=absent
+    line='export PATH=$PATH:/home/{{ user }}/.composer/vendor/bin/'
+  tags: composer
+
 - name: composer | add Composer shared vendor directory to path
-  template: 
-    src=composer.sh
+  template:
+    src=composer.j2
     dest=/etc/profile.d/composer.sh
     mode="a+x"
   tags: composer

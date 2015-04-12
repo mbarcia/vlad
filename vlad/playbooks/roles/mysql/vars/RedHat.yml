@@ -7,5 +7,3 @@ mysql_pkgs:
 mysql_service_name: "mysqld"
 mysql_socket: "/var/lib/mysql/mysql.sock"
 mysql_config_dir: "/etc"
-
-
