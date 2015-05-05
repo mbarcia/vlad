@@ -27,8 +27,8 @@
   - restart mysql
 
 - name: remove the InnoDB log files in case InnoDB settings have been changed (1/2).
-  file: 
-    path: "{{ mysql_install_dir }}/ib_logfile0" 
+  file:
+    path: "{{ mysql_install_dir }}/ib_logfile0"
     state: absent
   when: mysql_conf.changed
   sudo: true
