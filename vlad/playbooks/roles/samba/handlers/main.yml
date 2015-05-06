@@ -1,4 +1,4 @@
 ---
 - name: restart smbd
-  service: name=smbd state=restarted
+  service: name={{ samba_daemon }} state=restarted
   sudo: true
