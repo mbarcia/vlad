@@ -1,4 +1,10 @@
 ---
+# Load variable file based on the OS type and a common config file.
+- include_vars: "{{ item }}"
+  with_items:
+   - "{{ ansible_os_family }}.yml"
+   - "common.yml"
+
 - include: smb-install.yml
 
 - name: creates docroot directory
